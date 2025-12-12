@@ -1,0 +1,220 @@
+\documentclass[12pt,notitlepage]{article}
+
+\usepackage{graphicx,amsmath,natbib}
+\usepackage[margin=1in]{geometry}
+
+\usepackage{caption}
+
+\title{Final project GEO242: Brahmaputra-Jamuna River (Bangladesh Part) Water Level and Water-Surface Slope Analysis}
+\author{MD. Raihanul Islam}
+\date{11th December, 2025}
+
+\begin{document}
+\maketitle
+
+\section{Background}
+
+The Jamuna River (the braided reach of the Brahmaputra in Bangladesh) is one of the most dynamic large rivers on Earth. Its channel pattern changes through bar migration, bank erosion, and shifting flow paths, and these processes occur alongside strong seasonal and interannual variability in discharge. Because the river supports dense populations and critical infrastructure along its banks and adjacent floodplains, understanding historical variability in river stage (water level) is important for both hazard awareness and river management.
+
+Water level records from gauging stations provide a direct, long-term measurement of how the river’s stage responds to changing discharge and channel conditions. When water levels are available at two stations along the same reach (an upstream station and a downstream station), they can also be used to estimate the reach-averaged water-surface slope. In this study, the water-surface slope is computed as the difference in water level between the two gauges divided by the along-channel distance between them.
+
+Water-surface slope is a fundamental control on river morphology because it is closely linked to the along-channel water-surface gradient that drives flow. A steeper slope generally implies higher flow velocities for a given hydraulic geometry, which can increase boundary shear stress and the river’s capacity to mobilize sediment. Variations in slope therefore provide insight into changes in the river’s ability to transport sediment, adjust bed elevation, and reorganize channels and bars. In braided rivers like the Jamuna, such adjustments can be associated with channel shifting, bar dynamics, and changes in conveyance over time.
+
+In this report, historical water-level data from Bahadurabad (upstream) and Sirajganj (downstream) are used to: (1) plot time series of water levels at each station, (2) compute a time series of reach-averaged water-surface slope (reported in cm/km), and (3) summarize slope variability using annual statistics and simple regression models to describe long-term behavior. The goal is to demonstrate how routine gauge measurements can be used to quantify historical changes in stage and hydraulic gradient in a morphodynamically active river system.
+
+\section{Data}
+Dataset used:
+\begin{itemize}
+  \item Bahadurabad Water Level Station (lon = 89.73464, lat = 25.13028).(Located in data file as Bahadurabad Water Level Data.txt)
+  \item Sirajganj Water Level Station (lon = 89.71961, lat = 24.46847).(Located in data file as Sirajganj Water Level Data.txt)
+\end{itemize}
+
+This project uses historical water-level observations from the Bangladesh Water Development Board (BWDB). Two gauge stations along the Jamuna River were analyzed: Bahadurabad (upstream) and Sirajganj (downstream). Water level is reported in meters relative to the Public Works Datum (mPWD). The time span of the records used in this analysis is 1962-2017.
+
+The raw station files were provided as two-column text tables containing decimal year and water level (mPWD). Prior to analysis, the files were cleaned to remove incomplete lines, non-numeric entries, and rows with missing values. After cleaning, annual statistics were computed independently for each station, including the annual maximum and annual minimum water level for each calendar year. For reach-scale analysis, paired observations from Bahadurabad and Sirajganj were used (where overlapping in time) to compute a water-surface slope time series.
+
+All subsequent plots and statistics in this report are based on these cleaned BWDB water-level records and the derived annual max/min summaries.
+
+
+\subsection{Study area}
+The study area is shown in Figure~\ref{fig:jamuna_stations}, which includes the locations of the Bahadurabad and Sirajganj water-level stations along the Jamuna River. Figure~\ref{fig:jamuna_stations} was produced using the \texttt{jamuna\_station\_map.sh} script in GMT, which plots the national boundary of Bangladesh and overlays the two station locations.
+
+Topography in the vicinity of each station is shown in Figures~\ref{fig:bahadurabad_dem} and \ref{fig:sirajganj_dem}. These maps were generated from a digital elevation model (DEM) provided by the Survey of Bangladesh and rendered in GMT using the \texttt{jamuna\_station\_DEM\_map.sh} script.
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{jamuna_stations.png}
+\caption{Location of the Bahadurabad and Sirajganj water-level stations on the Jamuna River, Bangladesh.}
+\label{fig:jamuna_stations}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.80\textwidth]{jamuna_Bahadurabad_dem.png}
+\caption{Digital elevation model (DEM) around the Bahadurabad water-level station. Elevation is shown in meters.}
+\label{fig:bahadurabad_dem}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.80\textwidth]{jamuna_Sirajganj_dem.png}
+\caption{Digital elevation model (DEM) around the Sirajganj water-level station. Elevation is shown in meters.}
+\label{fig:sirajganj_dem}
+\end{figure}
+
+
+\section{Methods}
+\subsection{Annual max/min water level}
+For each year $t$, I have computed:
+\begin{equation}
+WL_{\max}(t) = \max\{WL(t)\}, \qquad WL_{\min}(t) = \min\{WL(t)\}.
+\end{equation}
+
+\subsection{Water-surface slope}
+Let $WL_B(t)$ and $WL_S(t)$ be the water levels (mPWD) at Bahadurabad and Sirajganj at time $t$, and let $D$ be the along-river station separation distance (m). The water-surface slope is
+\begin{equation}
+S(t) = \frac{WL_B(t) - WL_S(t)}{D}.
+\label{eq:slope_def}
+\end{equation}
+In this project, $D = 79170~\mathrm{m}$. Slopes are reported in cm/km using $1~\mathrm{m/m} = 10^{5}~\mathrm{cm/km}$.
+
+\subsection{Trend models}
+To describe long-term and multi-decadal variability in the annual-mean slope time series, several simple models were fitted. A linear trend is
+\begin{equation}
+\hat{y}(t) = m t + b,
+\label{eq:linear_model}
+\end{equation}
+and a polynomial of degree $n$ is
+\begin{equation}
+\hat{y}(t) = \sum_{k=0}^{n} a_k t^k.
+\label{eq:poly_model}
+\end{equation}
+I also fitted a sinusoidal model with an unknown period:
+\begin{equation}
+\hat{y}(t) = A\sin(\omega t) + B\cos(\omega t) + C,
+\qquad \omega=\frac{2\pi}{T},
+\label{eq:sine_model}
+\end{equation}
+where $T$ is the period (years), $A$ and $B$ control amplitude and phase, and $C$ is a constant offset. The sinusoid was fit by scanning a range of candidate periods and selecting the period that minimized the misfit (Section~\ref{sec:misfit}).
+
+\subsection{Model fit metric}
+\label{sec:misfit}
+Model performance was evaluated using the residual sum of squares (RSS),
+\begin{equation}
+RSS = \sum_{i=1}^{N}\left(y_i - \hat{y}_i\right)^2,
+\label{eq:rss}
+\end{equation}
+where $y_i$ are observations and $\hat{y}_i$ are model predictions at the same times.
+If observations have different uncertainties $\sigma_i$, a weighted residual sum of squares (WRSS) is more appropriate:
+\begin{equation}
+WRSS = \sum_{i=1}^{N}\left(\frac{y_i - \hat{y}_i}{\sigma_i}\right)^2.
+\label{eq:wrss}
+\end{equation}
+When all $\sigma_i$ are equal, WRSS is proportional to RSS, so the two metrics give the same ranking of models.
+
+
+
+\section{Results}
+\subsection{Water Level Plot}
+
+Figure~\ref{fig:wl_1962_2017} shows daily water level (mPWD) at Bahadurabad and Sirajganj from 1962 to 2017. 
+Both stations exhibit a pronounced annual cycle, with sharp rises to monsoon-season peaks and sustained low stages during the dry season, indicating that seasonal discharge variability is the dominant control on stage. Bahadurabad water levels are consistently higher than Sirajganj, with typical values of roughly 13-21~mPWD at Bahadurabad and 6-15~mPWD at Sirajganj. 
+Peak timing is generally coherent between the two stations, suggesting reach-scale hydrologic forcing rather than purely local effects.
+
+Figure~\ref{fig:wl_1962_2017} was generated using the GMT-based script \texttt{plot\_water\_levels.sh}, which reads the cleaned two-column (year and water level) files for each station and plots both records on the same axes with a shared time range and consistent axis scaling.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{jamuna_WL_1962_2017.png}
+\caption{Daily water-level time series (mPWD) for the Jamuna River at the Bahadurabad (blue) and Sirajganj (red) stations for 1962-2017. Both records show strong seasonal (monsoon) variability, with higher stages during the wet season and lower stages during the dry season.}
+\label{fig:wl_1962_2017}
+\end{figure}
+
+\subsection{Annual max/min water levels}
+
+Figures~\ref{fig:wlmaxmin_bahadurabad} and \ref{fig:wlmaxmin_sirajganj} show the annual maximum and annual minimum water levels derived from the historical station records (mPWD) after removing missing values and aggregating by year. At Bahadurabad, annual maxima are consistently high (roughly around 19-21~mPWD) and show modest interannual variability, while annual minima cluster lower (approximately 12-14~mPWD), indicating a fairly stable seasonal range over most of the record. At Sirajganj, both the annual maxima (about 13-15~mPWD) and minima (about 6-8~mPWD) are lower than at Bahadurabad, but they display a similar pattern of year-to-year variability, consistent with seasonal hydrologic forcing along the Jamuna River reach.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\linewidth]{Bahadurabad_WL_maxmin.png}
+\caption{Annual maximum (WL\_Max) and annual minimum (WL\_Min) water level at the Bahadurabad station (units: mPWD).}
+\label{fig:wlmaxmin_bahadurabad}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.95\linewidth]{Sirajganj_WL_maxmin.png}
+\caption{Annual maximum (WL\_Max) and annual minimum (WL\_Min) water level at the Sirajganj station (units: mPWD).}
+\label{fig:wlmaxmin_sirajganj}
+\end{figure}
+
+Figures~\ref{fig:wlmaxmin_bahadurabad} and \ref{fig:wlmaxmin_sirajganj} were generated using a GMT-based workflow. The raw daily water-level time series for each station (units: mPWD) were first cleaned to remove missing or non-numeric entries. The cleaned records were then grouped by calendar year to compute two summary statistics for each year: the annual maximum water level (WL\_Max) and the annual minimum water level (WL\_Min). These annual max/min time series were written to simple two-column ASCII files (Year, WaterLevel) and plotted in GMT as symbol plots (circles for WL\_Max and triangles for WL\_Min) with consistent axes and annotation. The processing and plotting steps were automated in the shell script \texttt{jamuna\_station\_WLmaxmin\_plot.sh}, which reads the station data files, computes the annual statistics, and exports the final figures as PNG files.
+
+\subsection{Water-surface slope and fitted models}
+Annual mean water-surface slope was computed from the daily water levels at Bahadurabad and Sirajganj using Eq.~\ref{eq:slope_def} and then converted to cm/km. The resulting time series shows substantial interannual variability, with slopes typically in the range of roughly $7$-$8~\mathrm{cm/km}$. A linear fit (Eq.~\ref{eq:linear_model}) suggests only a weak long-term increase compared to the year-to-year scatter (Figure~\ref{fig:slope_linear}).
+
+To explore whether the slope variability is better described by non-linear structure, I compared a quadratic model, a 5th-order polynomial model, and a sinusoidal model (Eq.~\ref{eq:sine_model}). Figure~\ref{fig:slope_compare} overlays these fits on the annual-mean slope observations. Visually, the quadratic model captures only broad curvature and does not represent the multi-decadal oscillation apparent in the data. The sinusoidal model produces a smooth oscillation with an estimated period of approximately $T \approx 33.5$ years, which reproduces the main low-frequency swings without introducing rapid short-wavelength structure. The 5th-order polynomial gives the lowest RSS, but it has more degrees of freedom and can be sensitive near the ends of the record, so it should be interpreted as a flexible empirical curve rather than a physically motivated model.
+
+The misfit values computed at the data years are: $RSS_{\text{quad}} = 3.8562$, $RSS_{\text{poly5}} = 2.6152$, and $RSS_{\text{sine}} = 2.8848$. In this analysis the weighting was uniform (all $\sigma_i$ equal), so WRSS gives the same model ranking as RSS. Based purely on RSS/WRSS, the 5th-order polynomial performs best. However, considering both fit quality and interpretability, the sinusoidal model provides a useful compact description of the dominant multi-decadal variability in slope.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.95\linewidth]{annual_slope_linear_fit.png}
+\caption{Annual mean water-surface slope (cm/km) with a best-fitting linear trend.}
+\label{fig:slope_linear}
+\end{figure}
+
+
+All slope-model figures were generated from the Jupyter notebook \texttt{Future Water Level Slope Prediction.ipynb} and saved as PNG files in the \texttt{figs/} directory using \texttt{matplotlib}.
+
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.85\linewidth]{slope_poly5_fit.png}
+\caption{Annual mean slope and fifth-order polynomial fit.}
+\label{fig:slope_poly5}
+\end{figure}
+
+\subsubsection{Model comparison and goodness-of-fit}
+Model performance was evaluated using the residual sum of squares (RSS),
+\begin{equation}
+\mathrm{RSS} = \sum_{i=1}^{N}\left(S_i - \hat{S}_i\right)^2,
+\end{equation}
+and the weighted residual sum of squares (WRSS),
+\begin{equation}
+\mathrm{WRSS} = \sum_{i=1}^{N}\left(\frac{S_i - \hat{S}_i}{\sigma_i}\right)^2,
+\end{equation}
+where $S_i$ are the observed annual mean slopes, $\hat{S}_i$ are the model predictions at the same years, and $\sigma_i$ are the assumed data uncertainties. In this analysis, uniform weights were used (constant $\sigma_i$), so RSS and WRSS provide the same ranking of model fits.
+
+Figure~\ref{fig:slope_compare} compares the fitted curves. Visually, the quadratic model mainly captures a gentle long-term curvature and does not reproduce the multi-decadal ups and downs seen in the data. The sinusoidal model captures an oscillatory pattern (best-fit period $T \approx 33.5$ years in this dataset) and follows the broad multi-decadal structure. The fifth-order polynomial provides the lowest overall misfit among the tested models (lowest RSS), and it also reproduces much of the low-frequency variability. However, higher-order polynomials can be less physically interpretable and may behave poorly near the ends of the record, so the sinusoidal model is a useful alternative when the goal is to represent quasi-periodic variability with a small number of parameters.
+
+Based on the computed misfit values in the notebook (RSS$_{\mathrm{quad}} = 3.8562$, RSS$_{\mathrm{poly5}} = 2.6152$, RSS$_{\mathrm{sine}} = 2.8848$), the fifth-order polynomial fit performs best by RSS/WRSS, followed by the sinusoidal model, with the quadratic model performing worst. For interpretation, the sinusoidal fit is attractive because it summarizes the variability using an amplitude, period, and phase, while still providing a competitive misfit.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.9\linewidth]{slope_model_comparison.png}
+\caption{Comparison of fitted models for annual mean water-surface slope. The sinusoidal model uses the best-fit period (about 33.5 years).}
+\label{fig:slope_compare}
+\end{figure}
+
+\subsubsection{Figure generation}
+Figures~\ref{fig:slope_linear}-\ref{fig:slope_compare} were produced in the Jupyter notebook \texttt{Future Water Level Slope Prediction.ipynb}. The notebook computes annual mean water levels, converts the reach-averaged slope to cm/km, fits the linear, polynomial, and sinusoidal models using least squares, and exports the plots as PNG files to the \texttt{figs/} directory.
+
+\section{Discussion and Conclusion}
+The Jamuna water-level records at Bahadurabad and Sirajganj show strong seasonal variability, and the annual max/min series capture interannual changes in extremes. The reach-averaged water-surface slope (computed from the two gauges) varies modestly through time; among the fitted models, the 5th-order polynomial gives the lowest RSS, but the sinusoidal model provides a comparably good fit with a simpler, more interpretable form. Overall, the results suggest low-frequency variability in slope in addition to any weak long-term trend.
+
+
+
+
+
+END
+\section{References}
+\nocite{*}
+\bibliographystyle{plainnat}
+\bibliography{S2950117224000049,S2211714825000172,S2352938521000616,S2666592125000095}
+
+
+
+\end{document}

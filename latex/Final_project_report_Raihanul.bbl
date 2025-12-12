@@ -1,0 +1,52 @@
+\begin{thebibliography}{4}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Islam and Islam(2021)]{ISLAM2021100525}
+MD.~Raihanul Islam and A.Z.MD.~Zahedul Islam.
+\newblock Plan form changes of the ganges-jamuna confluence and its relation to
+  flood.
+\newblock \emph{Remote Sensing Applications: Society and Environment},
+  22:\penalty0 100525, 2021.
+\newblock ISSN 2352-9385.
+\newblock \doi{https://doi.org/10.1016/j.rsase.2021.100525}.
+\newblock URL
+  \url{https://www.sciencedirect.com/science/article/pii/S2352938521000616}.
+
+\bibitem[Islam et~al.(2024)Islam, Khan, Salim, and
+  Musfequzzaman]{ISLAM2024100034}
+MD.~Raihanul Islam, Imran Khan, MD.~Alifnur Salim, and M.D. Musfequzzaman.
+\newblock Reconstruction of avulsion history of the brahmaputra river: Rare
+  example of a giant braided river course alteration through multi-channel
+  multi-avulsion processes.
+\newblock \emph{Evolving Earth}, 2:\penalty0 100034, 2024.
+\newblock ISSN 2950-1172.
+\newblock \doi{https://doi.org/10.1016/j.eve.2024.100034}.
+\newblock URL
+  \url{https://www.sciencedirect.com/science/article/pii/S2950117224000049}.
+
+\bibitem[Islam et~al.(2025)Islam, Mohonto, and Noor]{ISLAM2025100075}
+MD.~Raihanul Islam, Shovon Mohonto, and Fahmida Noor.
+\newblock Evolution of char lands in the padma river in bangladesh and its
+  impacts on planform morphology of the river.
+\newblock \emph{Results in Earth Sciences}, 3:\penalty0 100075, 2025.
+\newblock ISSN 2211-7148.
+\newblock \doi{https://doi.org/10.1016/j.rines.2025.100075}.
+\newblock URL
+  \url{https://www.sciencedirect.com/science/article/pii/S2211714825000172}.
+
+\bibitem[Khan and Islam(2025)]{KHAN2025554}
+Imran Khan and Md~Raihanul Islam.
+\newblock Earth observation data-based assessment of the impacts of june 2024
+  flooding in the sylhet division of bangladesh.
+\newblock \emph{Natural Hazards Research}, 5\penalty0 (3):\penalty0 554--562,
+  2025.
+\newblock ISSN 2666-5921.
+\newblock \doi{https://doi.org/10.1016/j.nhres.2025.01.009}.
+\newblock URL
+  \url{https://www.sciencedirect.com/science/article/pii/S2666592125000095}.
+
+\end{thebibliography}
